@@ -213,7 +213,7 @@ async function checkPriceOfItem(amazonItem, ebayItem){
         if (amazonItem.isItemAvailable && amazonItem.isEligibleForPrime) 
         {
 
-           if (ebayItem.price !== ebay_optimal_price) 
+           if (ebayItem.price != ebay_optimal_price) 
            {
    
 
