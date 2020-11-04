@@ -53,8 +53,13 @@ if (/complete|interactive|loaded/.test(document.readyState)) {
 
 
 function startPage() {
-    let bg_port = chrome.runtime.connect({ name: "amazon" });
-
+    try {
+        let bg_port = chrome.runtime.connect({ name: "amazon" });
+    } catch (error) {
+        
+    }
+    
+    console.log("document.title",document.title);
 
     if (document.title === "Robot Check") 
     {
@@ -93,10 +98,36 @@ function startPage() {
 
 
 
-    } else {
+    } else if(document.title === "Page Not Found")
+    {
+        console.log("Page Not Found Error");
 
+        var amazonItemData =
+        {
+            isPageCorrectlyOpened: false,
+            isItemAvailable: false,
+    
+            availabilityMessage: "Page Not Found Error",
+            isItemDeliveryExtended: "Page Not Found Error",
+            deliveryTimeMessage: "Page Not Found Error",
+            amazonItemUrl: getCurrentUrl(),
+            price: -1,
+            isEligibleForPrime: false,
+    
+        }
+
+        chrome.runtime.sendMessage({
+            type: 'from_amazon',
+            command: "fetched_data",
+            amazonItemData: amazonItemData
+    
+        });
+
+       
+    }else{
         scrapeAmazon();
     }
+
 
 
 }
@@ -119,6 +150,9 @@ async function scrapeAmazon() {
 
     //await waits for completion before next function starts
     await checkIfPriceExists();
+
+    console.log("checkIfPriceExists done");
+
 
     var isPrimeEligible = await IsEligibleForPrime();
 

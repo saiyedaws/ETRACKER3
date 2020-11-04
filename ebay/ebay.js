@@ -82,13 +82,16 @@ function getItemQuantityAndSku(itemNumber)
 
     var sku = $row.find('td[class*="listingSKU"]').find('.cell-wrapper').text();
     var quantity = parseInt($row.find('td[class*="availableQuantity"]').find('.cell-wrapper').text().replace(/[^0-9]/g, ''));
+    var itemNumber = $row.find(".grid-row").attr("data-id");
+    var price = parseFloat($row.find('td[class*="price"]').find('.cell-wrapper').text().replace(/[^0-9.]/g, ''));
 
     bg_port.postMessage(
         { 
             type: 'sentItemQuantityAndSku', 
             itemNumber: itemNumber,
             sku: sku,
-            quantity: quantity
+            quantity: quantity,
+            price: price
 
         });
 

@@ -44,15 +44,17 @@ var waitLimitedTimeUntilInnerTextExists = (selector, loopNumber, callback) =>
 
 
 
-var waitUnitEitherElementExists = (selector,selector2, loopNumber, callback) => 
+var waitUnitEitherElementExists = (selector, selector2, loopNumber, callback) => 
 {
-   
+    console.log("Loop# "+loopNumber);
+
         var el = document.querySelector(selector);
 
-
-
-
-        console.log("Loop# "+loopNumber);
+        var consoleMessage1 = `Searching for selector #1: '${selector}'`;
+        console.log(consoleMessage1);
+        var consoleMessage2 = `Searching for selector #2: '${selector2}'`;
+        console.log(consoleMessage2);
+   
         if (el)
         {
             console.log("Found el");
@@ -77,8 +79,17 @@ var waitUnitEitherElementExists = (selector,selector2, loopNumber, callback) =>
             return callback(null);
         }
         
-    
-        setTimeout(() => waitLimitedTimeUntilInnerTextExists(selector, loopNumber+1, callback), 500);
+
+        console.log(`Loop #${loopNumber} Done1`);
+
+       
+      
+        setTimeout(() => 
+        {
+            //console.log(`timeout Done`);
+
+            waitUnitEitherElementExists(selector, selector2, loopNumber, callback);
+        }, 500);
 }
 
         

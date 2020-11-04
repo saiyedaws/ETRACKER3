@@ -292,9 +292,14 @@ async function fetchAmazonProductDetails(item) {
   var itemNumber = item.itemNumber;
   var ebayPrice = item.price;
 
+  console.log("fetchAmazonProductDetails");
+
   return new Promise((resolve) => {
     //add check that right asin is being checked
     let messageListener = function (request) {
+
+      console.log("request",request);
+      
       if (
         request.type === "from_amazon" &&
         request.command === "fetched_data" &&

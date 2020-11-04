@@ -66,11 +66,12 @@ function printAmazonData()
 async function testCheckSku(itemNumber) {
 
 
+    //itemNumber = '352709133364';
 
     var item = await GetItemQuantityAndSku(itemNumber);
     console.log(item);
 
-    await checkSKU(item);
+    await checkItem(item);
     console.log("checkSKU Resolved");
 
 
@@ -126,7 +127,8 @@ function GetItemQuantityAndSku(itemNumber) {
                 {
                     itemNumber: request.itemNumber,
                     SKU: request.sku,
-                    quantity: request.quantity
+                    quantity: request.quantity,
+                    price: request.price
 
                 }
 
