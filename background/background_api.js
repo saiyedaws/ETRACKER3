@@ -1,4 +1,5 @@
-var amazon_captcha_port;
+var amazon_captcha_port,
+options_port;
 
 
 chrome.extension.onConnect.addListener(port => {
@@ -56,6 +57,35 @@ chrome.extension.onConnect.addListener(port => {
     
             amazon_captcha_port.onDisconnect.addListener(() => amazon_captcha_port = null );
         }
+
+
+            // Checks the connection source
+    if(port.name === 'options') 
+    {
+
+        options_port = port;
+
+        // Begins to listen messages from popup
+        options_port.onMessage.addListener(request => {
+
+ 
+            if(request.type === 'open_chrome_settings') 
+            {
+              chrome.tabs.create({ url: 'chrome://settings/content/javascript', active: false }, function (tab) {
+
+              });
+
+              chrome.tabs.create({ url: 'chrome://settings/content/images', active: false }, function (tab) {
+
+              });
+
+            }
+
+
+        });
+
+        options_port.onDisconnect.addListener(() => options_port = null );
+    }
 
 
 

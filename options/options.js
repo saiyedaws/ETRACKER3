@@ -1,4 +1,4 @@
-
+let bg_port = chrome.runtime.connect({ name: "options" });
 
 
 function save_settings()
@@ -50,8 +50,21 @@ function addEventListener(){
     document.querySelector('#price_percent').addEventListener('click', save_price_percent);
 
 
+    document.querySelector('#chrome_settings').addEventListener('click', open_chrome_settings);
+
 
 }addEventListener();
+
+function open_chrome_settings()
+{
+    copyToClipboard('https://www.amazon.ca');
+
+    bg_port.postMessage({ type: "open_chrome_settings"});
+}
+
+
+
+
 
 
 function save_price_percent(){
