@@ -44,7 +44,7 @@ docker pull tensorflow/serving
 cd --
 cd Documents
 cd ChromeExtensions
-cd EA-Tracker
+cd ETRACKER3
 cd captcha_solver_api_docker
 
 echo pwd is relative path
