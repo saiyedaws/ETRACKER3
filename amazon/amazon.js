@@ -315,10 +315,11 @@ function IsEligibleForPrime()
     return new Promise(resolve=>{
 
 
+        // method 1 set time out doesnt work for some reason on page so scrapping this method
+        /*
 
         
-        waitUnitEitherElementExists("#buybox-tabular .a-truncate-full","#merchant-info", 0, (element)=>
-            {
+        waitUnitEitherElementExists2("#buybox-tabular .a-truncate-full","#merchant-info", 0, (element)=>{
                 console.log("resolving begin");
 
                 if(element){
@@ -335,9 +336,49 @@ function IsEligibleForPrime()
                 }
         });
         
-     
+        */
 
+     //method 2
+    
+     function checkSelectorForFullfilledByAmazon(selector)
+     {
+        var isItemFullfilledByAmazon = false;
+
+            try {
+               var isItemFullfilledByAmazonElement = document.querySelector(selector);
+               isItemFullfilledByAmazon = isItemFullfilledByAmazonElement.innerText.toLowerCase().includes("amazon");
+
+              if(isItemFullfilledByAmazon){
+                  console.log("isItemFullfilledByAmazon", `true with selector ${selector}`);
+              }
+            } catch (error) {
+                
+            }
         
+            return isItemFullfilledByAmazon;
+     }
+
+     var isItemFullfilledByAmazon = false;
+
+     if(isItemFullfilledByAmazon === false)
+     {
+        isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('#buybox-tabular .a-truncate-full');
+     }
+
+
+     if(isItemFullfilledByAmazon === false)
+     {
+        isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('#merchant-info');
+     }
+        
+
+     if(isItemFullfilledByAmazon === false)
+     {
+        isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('#sfsb_accordion_head');
+     }
+
+     resolve(isItemFullfilledByAmazon);
+
     });
 
 

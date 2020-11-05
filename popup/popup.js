@@ -14,6 +14,9 @@ document.getElementById("checkSku_form").addEventListener("submit", function(e) 
     e.preventDefault();
 
     var itemNumber = document.getElementById("itemNumber").value;
+
+   // itemNumber = '353129994057';
+
     bg_port.postMessage(
         
     {

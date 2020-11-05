@@ -251,7 +251,7 @@ async function checkIfItemIsOutOfStock(amazonItem, ebayItem)
 
         if (amazonItem.isItemAvailable && amazonItem.isEligibleForPrime && ebayItem.quantity === 0) 
         {
-        resolve();
+       
             setItemQuantity(ebayItem.itemNumber, new_quantity).then(() => resolve());
         }else{
             resolve();
@@ -299,6 +299,11 @@ async function fetchAmazonProductDetails(item) {
     let messageListener = function (request) {
 
       console.log("request",request);
+      console.log("amazonItemUrl:",amazonItemUrl.toLowerCase().replace(/(\s\s\s*)/g, " "));
+      console.log("request.amazonItemUrl:",request.amazonItemData.amazonItemUrl
+      .toLowerCase()
+      .replace(/(\s\s\s*)/g, " "));
+      
       
       if (
         request.type === "from_amazon" &&

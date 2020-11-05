@@ -167,22 +167,83 @@ function setItemPrice(itemNumber, price)
 }
 
 
-function setRowCellValue(itemNumber, key, value) 
+
+
+
+var waitForEditValueBox = (loopNumber ,itemNumber, key, value, callback) => 
 {
+
+    console.log(`Loop #${loopNumber} for: ${itemNumber} - ${key}`);
+    
+
+    var table_row_pattern = `tbody[id*=grid-row-${itemNumber}]`;
+    $row = $(table_row_pattern).first();
+    $row.find(`td[class*="${key}"]`).find('button[data]').click();
+
+    setTimeout(() => 
+    {
+        var selector = `input[name="members[0][${key}]"]`;
+        var priceBox = document.querySelector(selector);
+    
+        console.log(`Waiting for ${selector}.`);
+    
+        if (priceBox)
+        {
+           console.log(`Found ${selector} on loopNumber: ${loopNumber}`);
+            return callback(priceBox);
+        }else{
+            loopNumber++;    
+            setTimeout(() => waitForEditValueBox(loopNumber, itemNumber, key, value, callback), 5000);
+        }
+           
+    }, 1000);
+    
+    
+   
+}
+
+
+async function setRowCellValue(itemNumber, key, value) 
+{
+
+    console.log(`starting setRowCellValue of ${itemNumber}, ${key}, ${value}`);
+  
 
     return new Promise (resolve => {
 
-        var table_row_pattern = 'tbody[id*=grid-row-'+itemNumber+']';
-
+        /* old method
+        var table_row_pattern = `tbody[id*=grid-row-${itemNumber}]`;
         $row = $(table_row_pattern).first();
-        $row.find('td[class*="' + key + '"]').find('button[data]').click();
+        $row.find(`td[class*="${key}"]`).find('button[data]').click();
+
+        setTimeout(() => {
+            var table_row_pattern = `tbody[id*=grid-row-${itemNumber}]`;
+            $row = $(table_row_pattern).first();
+            $row.find(`td[class*="${key}"]`).find('button[data]').click();
+        }, 50);
+        */
             
 
+       waitForEditValueBox(1, itemNumber, key, value, (priceBox1) =>
+       {
+           
         setTimeout(
             function() 
             {
               
-              document.execCommand('insertText', false, value);
+              //new method 
+                console.log("value to insert",value);
+                var selector = `input[name="members[0][${key}]"]`;
+                var priceBox = document.querySelector(selector);
+                priceBox.value = value;
+                priceBox.dispatchEvent(new Event("input", { bubbles: true }));
+                focusOnTextBoxAtEndOfTheLine(priceBox);
+
+
+                //old method
+               // document.execCommand('insertText', false, value);
+           
+             
 
 
               setTimeout(
@@ -195,17 +256,34 @@ function setRowCellValue(itemNumber, key, value)
                     setTimeout(() => resolve(), 8000); // Third Wait - After Submitting clicking
 
 
-                }, 700);//Second Wait - After Text Enetered
+                }, 900);//Second Wait - After Text Enetered
 
             }, 500);//First Wait - After Form openm
 
 
+       });
 
-        
+
 
     });
 }
 
+function focusOnTextBoxAtEndOfTheLine(elementToFocusOn) {
+    var varCtlLen = elementToFocusOn.value.length;
+    // For Most Web Browsers
+    if (elementToFocusOn.setSelectionRange) {
+      elementToFocusOn.focus();
+      elementToFocusOn.setSelectionRange(varCtlLen, varCtlLen);
+      // IE8 and below
+    } else if (elementToFocusOn.createTextRange) {
+      var range = elementToFocusOn.createTextRange();
+      range.collapse(true);
+      range.moveEnd("character", varCtlLen);
+      range.moveStart("character", varCtlLen);
+      range.select();
+    }
+  }
+  
 
 function getCurrentPgNumber()
 {
