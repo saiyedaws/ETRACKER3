@@ -1,6 +1,14 @@
 
 echo ---------------------INSTALLING  CHROME EXTENSION-----------------------------
 
+echo stop all docker containers
+docker stop $(docker ps -aq)
+
+echo remove all docker containers
+docker rm $(docker ps -aq)
+
+
+
 echo Download Git Bash at: https://git-scm.com/downloads
 
 echo for windows , download chrome canary
