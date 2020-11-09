@@ -97,3 +97,22 @@ document.getElementById("amazon_form").addEventListener("submit", function(e) {
 });
 
 
+document.getElementById("competitor_watch_form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    console.log("competitor watch start");
+    var itemNumber = document.getElementById("itemNumber").value;
+
+
+    bg_port.postMessage(
+        { 
+            type: "from_popup",
+            command:"check_competitor",
+            itemNumber: itemNumber
+        
+        });
+
+
+});
+
+

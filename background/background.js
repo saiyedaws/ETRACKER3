@@ -168,20 +168,54 @@ async function checkSKUList(list) {
 
 async function checkItem(ebayItem) 
 {
- var isCheckOutOfStockEnabled = JSON.parse(localStorage.getItem('out_of_stock_check_box_value'));
+console.log("\n\n    ---------------------------- Check Item -------------------------   \n\n");
+
+var amazonItem = await fetchAmazonProductDetails(ebayItem);
+console.log('ebayItem',ebayItem);
+console.log('amazonItem',amazonItem);
+
+console.log('\n\n')
+
+var isCheckOutOfStockEnabled = JSON.parse(localStorage.getItem('out_of_stock_check_box_value'));
 console.log("isCheckOutOfStockEnabled", isCheckOutOfStockEnabled);
 
-var isPriceCheckEnabled = JSON.parse(localStorage.getItem('price_percent'));
-console.log("price_percent",isPriceCheckEnabled);
+var isPriceCheckEnabled = JSON.parse(localStorage.getItem('price_check_box_value'));
+console.log("isPriceCheckEnabled",isPriceCheckEnabled);
 
-  var amazonItem = await fetchAmazonProductDetails(ebayItem);
+var isMaxItemPriceEnabled = JSON.parse(localStorage.getItem('max_item_price_check_box_value'));
+console.log("isMaxItemPriceEnabled",isMaxItemPriceEnabled);
+
+var maxItemPrice = JSON.parse(localStorage.getItem('max_item_price_input'));
+console.log("maxItemPrice",maxItemPrice);
+
+var isCompetitorWatchEnabled = JSON.parse(localStorage.getItem('competitor_watch_check_box'));
+console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
+
+
+
+  if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice)
+  {
+    await setItemQuantity(ebayItem.itemNumber, 0);
+
+    console.log(`isMaxItemPriceEnabled: Enabled  - Zeroing Item and exiting function for item ${ebayItem.itemNumber} with amazonPrice: ${amazonItem.price}`);
+    return true;
+  }
 
   if(amazonItem.isPageCorrectlyOpened && isCheckOutOfStockEnabled)
   {
     await checkIfItemIsOutOfStock(amazonItem,ebayItem);
   }
 
-  if(amazonItem.isPageCorrectlyOpened && isPriceCheckEnabled)
+  if(amazonItem.isPageCorrectlyOpened && amazonItem.price > 0 && isCompetitorWatchEnabled)
+  {
+    var ebaySearchResults = await fetchEbaySearchResults(ebayItem.title);
+    console.log('ebaySearchResults',ebaySearchResults);
+    await checkCompetitors(ebayItem, amazonItem, ebaySearchResults);
+   
+  }
+
+
+  if(amazonItem.isPageCorrectlyOpened && amazonItem.price > 0 && isPriceCheckEnabled)
   {
     await checkPriceOfItem(amazonItem,ebayItem);
   }
@@ -190,7 +224,10 @@ console.log("price_percent",isPriceCheckEnabled);
 
   
 
+  return true;
 }
+
+
 
 async function checkPriceOfItem(amazonItem, ebayItem){
 
@@ -210,10 +247,16 @@ async function checkPriceOfItem(amazonItem, ebayItem){
         console.log("amazonItem",amazonItem);
 
 
-        if (amazonItem.isItemAvailable && amazonItem.isEligibleForPrime) 
+        if (amazonItem.isItemAvailable && amazonItem.isEligibleForPrime && amazonItem.price>0) 
         {
 
-           if (ebayItem.price != ebay_optimal_price) 
+          //if ebayprice is within +- 2$ stay the same
+           if 
+           (
+             (ebayItem.price) > (ebay_optimal_price+2) && 
+             (ebayItem.price) < (ebay_optimal_price-2)
+
+            ) 
            {
    
 
@@ -470,7 +513,7 @@ function launchAmazonItemPage(b64SKU) {
     var sku = decodeSKU(b64SKU);
 
     var amazonItemUrl = `https://www.amazon.ca/dp/${sku}`;
-    chrome.tabs.create({ url: amazonItemUrl, active: false }, function (tab) {
+    chrome.tabs.create({ url: amazonItemUrl, active: true }, function (tab) {
       amazon_tab_id = tab.id;
       var codeToInject = `let checkThisProduct = true, asin = "${sku}";`;
 
@@ -483,4 +526,128 @@ function launchAmazonItemPage(b64SKU) {
       );
     });
   });
+}
+
+
+function fetchEbaySearchResults(searchTerm) 
+{
+	var searchUrl = ebaySearchUrlBuilder(searchTerm);
+
+    return new Promise((resolve) => 
+    {
+
+      console.log("searchUrl:",searchUrl);
+        
+		chrome.tabs.create({ url: searchUrl, active: true }, function (tab) {
+			ebay_search_tab_id = tab.id;
+
+			//add check that right asin is being checked
+			let messageListener2 = function (request) {
+				if (request.type === "from_search") {
+					chrome.tabs.remove(ebay_search_tab_id, () => {
+						resolve(request.searchResults);
+					});
+
+					chrome.runtime.onMessage.removeListener(messageListener2);
+				}
+			};
+
+			chrome.runtime.onMessage.addListener(messageListener2);
+        });
+        
+
+
+	});
+}
+
+function ebaySearchUrlBuilder(searchTerm) {
+	var url = new URL(
+		"https://www.ebay.ca/sch/i.html?_from=R40&_nkw=Innova+Heavy+Duty+Inversion+Table&_sacat=0"
+  );
+  
+  
+	// If your expected result is "http://foo.bar/?x=42&y=2"
+
+	url.searchParams.set("_nkw", searchTerm);
+
+	return url.href;
+}
+
+
+
+function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
+  return new Promise((resolve, reject) => 
+  {
+    console.log("Checking competitors");
+
+    
+    var optimizedPrice = optimizePrice(
+      ebayItem.price,
+      amazonItem.price,
+      ebaySearchResults
+    );
+
+
+    console.log("Optimize Priced: ", optimizedPrice);
+
+    if (optimizedPrice > 0 && amazonItem.price > 0  && amazonItem.isItemAvailable && amazonItem.isEligibleForPrime) 
+    {
+      if (ebayItem.price > optimizedPrice) 
+      {
+
+        console.log(`
+        Optimizing Price of Item.
+        EbayItem-Price: ${ebayItem.price}
+        amazonItem-Price: ${amazonItem.price}
+        optimized-Price: ${optimizedPrice}
+        `);
+
+        setItemPrice(ebayItem.itemNumber, optimizedPrice).then(() => resolve());
+        //resolve();
+
+      }else{
+        resolve();
+      }
+    }else{
+      resolve();
+    }
+
+  });
+}
+
+
+function optimizePrice(myPrice, amazonPrice, ebaySearchResults) 
+{
+  var optimizedPrice = -999;
+  
+  console.log("\n Starting Optimize Price Function");
+
+  console.log(`
+  o-amazonPrice: ${amazonPrice}
+  o-myPrice: ${myPrice}
+  `);
+
+  for (var index = 0; index < ebaySearchResults.length; index++) 
+  {
+		//this is a price, change into object array
+		var competitorPrice = ebaySearchResults[index];
+
+    if (amazonPrice <= competitorPrice) 
+    {
+      //console.log(`competitorPrice:  (${competitorPrice})`);
+
+      if (myPrice > competitorPrice) 
+      {
+        console.log(`myPrice(${myPrice}) > competitorPrice(${competitorPrice})`);
+				optimizedPrice = competitorPrice - 1.03;
+				break;
+      }
+      
+    }
+    
+
+	}
+
+	var optimizedPrice = optimizedPrice.toFixed(2);
+	return optimizedPrice;
 }

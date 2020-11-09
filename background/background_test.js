@@ -33,11 +33,38 @@ chrome.extension.onConnect.addListener((port) => {
         console.log("Debug Mode - print_amazon_data");
         printAmazonData();
       }
+
+     // Checks the form submission
+     if (
+      request.type === "from_popup" &&
+      request.command === "check_competitor"
+    ) {
+      console.log("Debug Mode - check_competitor");
+      checkCompetitor(request.itemNumber);
+    }
+
     });
 
     popup_port.onDisconnect.addListener(() => (popup_port = null));
   }
 });
+
+
+async function checkCompetitor(itemNumber){
+  var ebayItem = await GetItemQuantityAndSku(itemNumber);
+  console.log("ebayItem",ebayItem);
+
+  var amazonItem = await fetchAmazonProductDetails(ebayItem);
+  console.log("amazonItem",amazonItem);
+  
+
+  var ebaySearchResults = await fetchEbaySearchResults(ebayItem.title);
+  console.log('ebaySearchResults',ebaySearchResults);
+
+  await checkCompetitors(ebayItem, amazonItem, ebaySearchResults);
+
+
+}
 
 function printAmazonData() {
   console.log("print_amazon_data");
@@ -48,11 +75,12 @@ function printAmazonData() {
   });
 }
 
-async function testCheckSku(itemNumber) {
+async function testCheckSku(itemNumber) 
+{
   //itemNumber = '352709133364';
 
   var ebayItem = await GetItemQuantityAndSku(itemNumber);
-  console.log(ebayItem);
+  console.log("ebayItem background test",ebayItem);
 
   var amazonItem = await fetchAmazonProductDetails(ebayItem);
 
@@ -97,9 +125,10 @@ function GetItemQuantityAndSku(itemNumber) {
 
           item = {
             itemNumber: request.itemNumber,
-            SKU: request.sku,
+            SKU: request.SKU,
             quantity: request.quantity,
             price: request.price,
+            title:request.title
           };
 
           resolve(item);

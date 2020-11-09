@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Ebay Tracker V3",
-    "version": "2.1",
+    "version": "3.0",
     "permissions": [
       "<all_urls>",
       "tabs"
@@ -35,6 +35,11 @@
       {
         "matches": ["*://signin.ebay.ca/ws/eBayISAPI.dll?*"],
         "js": ["libraries/jquery.min.js", "ebay/ebay_sign_in.js","libraries/custom.js"],
+        "run_at": "document_end"
+      },
+      {
+        "matches": ["*://www.ebay.ca/sch/*", "*://ebay.ca/sh/sch/*"],
+        "js": ["libraries/jquery.min.js","libraries/custom.js", "ebay/ebay_search.js"],
         "run_at": "document_end"
       }
 

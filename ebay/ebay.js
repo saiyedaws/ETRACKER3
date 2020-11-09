@@ -77,22 +77,24 @@ bg_port.onMessage.addListener((request) =>
 function getItemQuantityAndSku(itemNumber)
 {
 
+
     var table_row_pattern = 'tbody[id*=grid-row-'+itemNumber+']';
     $row = $(table_row_pattern).first();
 
-    var sku = $row.find('td[class*="listingSKU"]').find('.cell-wrapper').text();
+    var SKU = $row.find('td[class*="listingSKU"]').find('.cell-wrapper').text();
     var quantity = parseInt($row.find('td[class*="availableQuantity"]').find('.cell-wrapper').text().replace(/[^0-9]/g, ''));
     var itemNumber = $row.find(".grid-row").attr("data-id");
     var price = parseFloat($row.find('td[class*="price"]').find('.cell-wrapper').text().replace(/[^0-9.]/g, ''));
+    var title = $row.find('td[class*="title"]').find('.cell-wrapper').text();
 
     bg_port.postMessage(
         { 
             type: 'sentItemQuantityAndSku', 
             itemNumber: itemNumber,
-            sku: sku,
+            SKU: SKU,
             quantity: quantity,
-            price: price
-
+            price: price,
+            title:title
         });
 
 
@@ -108,13 +110,19 @@ function getSKUsList() {
 
         //Setting variable in jQuery, this is how you select an item and make it into a jQeury element.
         let $row = $(row);
+        var SKU = $row.find('td[class*="listingSKU"]').find('.cell-wrapper').text();
+        var quantity = parseInt($row.find('td[class*="availableQuantity"]').find('.cell-wrapper').text().replace(/[^0-9]/g, ''));
+        var itemNumber = $row.find(".grid-row").attr("data-id");
+        var price = parseFloat($row.find('td[class*="price"]').find('.cell-wrapper').text().replace(/[^0-9.]/g, ''));
+        var title = $row.find('td[class*="title"]').find('.cell-wrapper').text();
 
         items.push({
 
-            SKU: $row.find('td[class*="listingSKU"]').find('.cell-wrapper').text(),
-            quantity: parseInt($row.find('td[class*="availableQuantity"]').find('.cell-wrapper').text().replace(/[^0-9]/g, '')),
-            itemNumber: $row.find(".grid-row").attr("data-id"),
-            price: parseFloat($row.find('td[class*="price"]').find('.cell-wrapper').text().replace(/[^0-9.]/g, ''))
+            SKU: SKU,
+            quantity: quantity,
+            itemNumber: itemNumber,
+            price: price,
+            title:title
         
         });
 

@@ -4,6 +4,8 @@ let bg_port = chrome.runtime.connect({ name: "amazon" });
 bg_port.onMessage.addListener((request) => 
 {
 
+    console.log("request from top",request);
+
     if(request.from === "from_background_test" && request.type === 'print_amazon_data') 
     {
         console.log("from_background_test");
@@ -53,31 +55,39 @@ if (/complete|interactive|loaded/.test(document.readyState)) {
 
 
 function startPage() {
+
     try {
         let bg_port = chrome.runtime.connect({ name: "amazon" });
     } catch (error) {
-        
+        console.log("error establishing port");
+        console.log(error);
     }
     
     console.log("document.title",document.title);
 
-    if (document.title === "Robot Check") 
+    var captchaInputElement = document.querySelectorAll("#captchacharacters");
+    console.log("Captcha Element Found");
+
+    if (document.title === "Robot Check" || captchaInputElement.length>0 ) 
     {
         setTimeout(() => 
         {
             console.log("Robot Check Doc Found");
 
+        
             var captchaImgUrl = document.querySelectorAll(".a-text-center.a-row")[1].querySelectorAll("img")[0].getAttribute("src");
-            bg_port.postMessage({ type: 'amazon_captcha_found', captchaImgUrl: captchaImgUrl });
-    
-    
-            bg_port.onMessage.addListener((request) => {
-    
-                if (request.type === 'amazon_captcha_solved') {
-                    console.log("code: " + request.captchaKey)
+          
+           
+            chrome.runtime.sendMessage({type: "amazon_captcha_found_2", captchaImgUrl: captchaImgUrl}, function(response) 
+            {
+                console.log(response.type);
+
+                if (response.type === 'amazon_captcha_solved') 
+                {
+                    console.log("code: " + response.captchaKey)
     
                     var typeCaptchaTextBox = document.getElementById("captchacharacters");
-                    typeCaptchaTextBox.value = request.captchaKey;
+                    typeCaptchaTextBox.value = response.captchaKey;
     
                     setTimeout(() => {
                         document.querySelectorAll('button[type="submit"]')[0].click();
@@ -85,12 +95,14 @@ function startPage() {
     
     
                 }
-    
-    
-    
             });
             
-        }, 10000);
+
+
+
+            
+        }, 5000);
+
 
 
 
