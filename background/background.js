@@ -256,8 +256,8 @@ async function checkPriceOfItem(amazonItem, ebayItem){
           //if ebayprice is within +- 2$ stay the same
            if 
            (
-             (ebayItem.price) > (ebay_optimal_price+2) || 
-             (ebayItem.price) < (ebay_optimal_price-2)
+             (ebayItem.price) > (ebay_optimal_price+1) || 
+             (ebayItem.price) < (ebay_optimal_price-1)
 
             ) 
            {
