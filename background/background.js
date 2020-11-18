@@ -236,11 +236,14 @@ async function checkPriceOfItem(amazonItem, ebayItem){
         var price_percent = (price_percent + 100)/100;
         var ebay_optimal_price = amazonItem.price*price_percent;
         ebay_optimal_price = ebay_optimal_price.toFixed(2);
+        ebay_optimal_price = parseInt(ebay_optimal_price);
+        
 
-
+        console.log();
         console.log("\nprice_percent", price_percent);
         console.log("Current EbayPrice", ebayItem.price);
         console.log("Current Amazon Price", amazonItem.price);
+        console.log("ebay_optimal_price",ebay_optimal_price);
         console.log("ebay_optimal_price", `${amazonItem.price} * ${price_percent} = ${ebay_optimal_price}`);
         
        
