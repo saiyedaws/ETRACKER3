@@ -305,8 +305,8 @@ async function checkIfItemIsOutOfStock(amazonItem, ebayItem)
         {
        
             setItemQuantity(ebayItem.itemNumber, new_quantity).then(() => resolve());
-            
-        }else if(!amazonItem.isItemAvailable || !amazonItem.isEligibleForPrime)
+
+        }else if( (!amazonItem.isItemAvailable || !amazonItem.isEligibleForPrime) && ebayItem.quantity > 0 )
         {
           setItemQuantity(ebayItem.itemNumber, 0).then(() => resolve());
         }else{
