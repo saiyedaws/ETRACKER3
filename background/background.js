@@ -193,7 +193,7 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
 
 
-  if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice)
+  if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice && ebayItem.quantity > 0)
   {
     await setItemQuantity(ebayItem.itemNumber, 0);
 
