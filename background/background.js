@@ -289,15 +289,28 @@ async function checkIfItemIsOutOfStock(amazonItem, ebayItem)
     {
         //get new quantity from options
         var new_quantity = JSON.parse(localStorage.getItem('new_quantity'));
-        console.log("New Quantity background", new_quantity);
+        console.log("background Page: New Quantity=", new_quantity);
+
+        var data = 
+        `
+        amazonItem.isItemAvailable: ${amazonItem.isItemAvailable}
+        amazonItem.isEligibleForPrime: ${amazonItem.isEligibleForPrime}
+        ebayItem.quantity: ${ebayItem.quantity}
+        `;
+
+        console.log("data",data);
 
 
         if (amazonItem.isItemAvailable && amazonItem.isEligibleForPrime && ebayItem.quantity === 0) 
         {
        
             setItemQuantity(ebayItem.itemNumber, new_quantity).then(() => resolve());
+            
+        }else if(!amazonItem.isItemAvailable || !amazonItem.isEligibleForPrime)
+        {
+          setItemQuantity(ebayItem.itemNumber, 0).then(() => resolve());
         }else{
-            resolve();
+          resolve();
         }
         
     });

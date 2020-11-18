@@ -84,13 +84,18 @@ async function testCheckSku(itemNumber)
 
   var amazonItem = await fetchAmazonProductDetails(ebayItem);
 
-  if (amazonItem.isPageCorrectlyOpened) {
+  if (amazonItem.isPageCorrectlyOpened) 
+  {
+    console.log("Test Check Out of Stock, start");
     await checkIfItemIsOutOfStock(amazonItem, ebayItem);
   }
 
-  if (amazonItem.isPageCorrectlyOpened) {
+  if (amazonItem.isPageCorrectlyOpened) 
+  {
     await checkPriceOfItem(amazonItem, ebayItem);
   }
+
+
 }
 
 async function testSetItemQuantity(testItemNumber, testQuantity) {
