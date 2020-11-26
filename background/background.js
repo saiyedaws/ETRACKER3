@@ -194,6 +194,7 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
  if(!amazonItem.isPageCorrectlyOpened)
   {
+    console.log("Starting ifPageNotOpenedCorrectly");
     await setItemQuantity(ebayItem.itemNumber, 0);
 
     console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
@@ -210,6 +211,7 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
   if(amazonItem.isPageCorrectlyOpened && isCheckOutOfStockEnabled)
   {
+    console.log("Starting checkIfItemIsOutOfStock");
     await checkIfItemIsOutOfStock(amazonItem,ebayItem);
   }
 
@@ -217,6 +219,7 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
   {
     var ebaySearchResults = await fetchEbaySearchResults(ebayItem.title);
     console.log('ebaySearchResults',ebaySearchResults);
+    console.log("Starting checkCompetitors");
     await checkCompetitors(ebayItem, amazonItem, ebaySearchResults);
    
   }
@@ -224,6 +227,7 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
   if(amazonItem.isPageCorrectlyOpened && amazonItem.price > 0 && isPriceCheckEnabled)
   {
+    console.log("Starting checkPriceOfItem");
     await checkPriceOfItem(amazonItem,ebayItem);
   }
 
