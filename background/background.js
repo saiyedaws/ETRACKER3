@@ -201,9 +201,13 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
     return true;
   }
 
-  if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice && ebayItem.quantity > 0)
+  if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice)
   {
-    await setItemQuantity(ebayItem.itemNumber, 0);
+    if(ebayItem.quantity > 0)
+    {
+      await setItemQuantity(ebayItem.itemNumber, 0);
+    }
+    
 
     console.log(`isMaxItemPriceEnabled: Enabled  - Zeroing Item and exiting function for item ${ebayItem.itemNumber} with amazonPrice: ${amazonItem.price}`);
     return true;
