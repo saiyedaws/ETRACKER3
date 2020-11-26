@@ -192,6 +192,13 @@ var isCompetitorWatchEnabled = JSON.parse(localStorage.getItem('competitor_watch
 console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
 
+ if(!amazonItem.isPageCorrectlyOpened)
+  {
+    await setItemQuantity(ebayItem.itemNumber, 0);
+
+    console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
+    return true;
+  }
 
   if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice && ebayItem.quantity > 0)
   {

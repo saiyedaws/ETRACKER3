@@ -66,10 +66,11 @@ function startPage() {
     console.log("document.title",document.title);
 
     var captchaInputElement = document.querySelectorAll("#captchacharacters");
-    console.log("Captcha Element Found");
 
     if (document.title === "Robot Check" || captchaInputElement.length>0 ) 
     {
+        console.log("Captcha Element Found");
+        
         setTimeout(() => 
         {
             console.log("Robot Check Doc Found");
@@ -127,6 +128,8 @@ function startPage() {
             isEligibleForPrime: false,
     
         }
+
+        console.log("amazonItemData",amazonItemData);
 
         chrome.runtime.sendMessage({
             type: 'from_amazon',

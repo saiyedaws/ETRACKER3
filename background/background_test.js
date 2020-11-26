@@ -80,8 +80,10 @@ async function testCheckSku(itemNumber)
   //itemNumber = '352709133364';
 
   var ebayItem = await GetItemQuantityAndSku(itemNumber);
+
   console.log("ebayItem background test",ebayItem);
 
+  /*
   var amazonItem = await fetchAmazonProductDetails(ebayItem);
 
   if (amazonItem.isPageCorrectlyOpened) 
@@ -94,6 +96,9 @@ async function testCheckSku(itemNumber)
   {
     await checkPriceOfItem(amazonItem, ebayItem);
   }
+  */
+
+  await checkItem(ebayItem);
 
 
 }
