@@ -195,7 +195,12 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
  if(!amazonItem.isPageCorrectlyOpened)
   {
     console.log("Starting ifPageNotOpenedCorrectly");
-    await setItemQuantity(ebayItem.itemNumber, 0);
+
+    if(ebayItem.quantity > 0)
+    {
+      await setItemQuantity(ebayItem.itemNumber, 0);
+    }
+    
 
     console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
     return true;
