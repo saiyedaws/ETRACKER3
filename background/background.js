@@ -611,11 +611,13 @@ function ebaySearchUrlBuilder(searchTerm) {
 
 
 
-function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
+async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
   return new Promise((resolve, reject) => 
   {
     console.log("Checking competitors");
 
+    console.log("ebayItem.price",ebayItem.price);
+    console.log("amazonItem.price",amazonItem.price);
     
     var optimizedPrice = optimizePrice(
       ebayItem.price,
@@ -625,10 +627,21 @@ function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
 
 
     console.log("Optimize Priced: ", optimizedPrice);
+    console.log("amazonItem.price: ", amazonItem.price);
+    console.log("amazonItem.isItemAvailable: ", amazonItem.isItemAvailable);
+    console.log("amazonItem.isEligibleForPrime: ", amazonItem.isEligibleForPrime);
+    console.log("ebayItem.price: ", ebayItem.price);
+    console.log("ebayItem.price-1.03: ", ebayItem.price-1.03);
+
+
 
     if (optimizedPrice > 0 && amazonItem.price > 0  && amazonItem.isItemAvailable && amazonItem.isEligibleForPrime) 
     {
-      if (ebayItem.price > optimizedPrice) 
+      if(optimizedPrice == ebayItem.price)
+      {
+        console.log("ebay Item price already optimized, exiting");
+        resolve();
+      }else if (ebayItem.price > optimizedPrice || (ebayItem.price-1.03 < amazonItem.price) ) 
       {
 
         console.log(`
@@ -663,16 +676,29 @@ function optimizePrice(myPrice, amazonPrice, ebaySearchResults)
   o-myPrice: ${myPrice}
   `);
 
+  
+  console.log("optimizePrice o-amazonPrice:",amazonPrice);
+  console.log("optimizePrice o-myPrice:",myPrice);
+  console.log("optimizePrice ebaySearchResults:",ebaySearchResults);
+
   for (var index = 0; index < ebaySearchResults.length; index++) 
   {
 		//this is a price, change into object array
-		var competitorPrice = ebaySearchResults[index];
+    var competitorPrice = ebaySearchResults[index];
+    competitorPrice = parseFloat(competitorPrice).toFixed(2);
+    
+    console.log("inside loop, competitor Price",competitorPrice);
+    console.log("inside loop, amazonPrice Price",amazonPrice);
+    console.log("inside loop, myPrice Price",myPrice);
 
     if (amazonPrice <= competitorPrice) 
     {
       //console.log(`competitorPrice:  (${competitorPrice})`);
 
-      if (myPrice > competitorPrice) 
+      console.log("Amazon Price is greater or equal then competitorPrice");
+      console.log("\n\n");
+
+      if (myPrice > competitorPrice || myPrice < amazonPrice) 
       {
         console.log(`myPrice(${myPrice}) > competitorPrice(${competitorPrice})`);
 				optimizedPrice = competitorPrice - 1.03;
@@ -682,8 +708,18 @@ function optimizePrice(myPrice, amazonPrice, ebaySearchResults)
     }
     
 
+    //var promiseResult = await printMessage();
+   // console.log("promiseResult",promiseResult);
 	}
 
 	var optimizedPrice = optimizedPrice.toFixed(2);
 	return optimizedPrice;
+}
+
+function printMessage(){
+
+  return new Promise((resolve, reject) => 
+  {
+    resolve("Done Promise@");
+  });
 }
