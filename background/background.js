@@ -651,7 +651,19 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
         optimized-Price: ${optimizedPrice}
         `);
 
-        setItemPrice(ebayItem.itemNumber, optimizedPrice).then(() => resolve());
+
+        if 
+        (
+          (ebayItem.price) > (optimizedPrice+1) || 
+          (ebayItem.price) < (optimizedPrice-1)
+
+         ){
+          setItemPrice(ebayItem.itemNumber, optimizedPrice).then(() => resolve());
+         }else{
+           resolve();
+         }
+
+        //setItemPrice(ebayItem.itemNumber, optimizedPrice).then(() => resolve());
         //resolve();
 
       }else{
