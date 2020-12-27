@@ -669,7 +669,29 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
       }else{
         resolve();
       }
-    }else{
+    }else if((optimizedPrice == -999.00) && (ebayItem.price-1.03 < amazonItem.price))
+    {
+
+        var price_percent = JSON.parse(localStorage.getItem('price_percent'));
+        price_percent = (price_percent + 100)/100;
+        var ebay_optimal_price = amazonItem.price*price_percent;
+        ebay_optimal_price = ebay_optimal_price.toFixed(2);
+        ebay_optimal_price = parseInt(ebay_optimal_price);
+        
+
+        console.log();
+        console.log("---------------(optimizedPrice == -999.00) && (ebayItem.price-1.03 < amazonItem.price)----------------------");
+        console.log("\nprice_percent", price_percent);
+        console.log("Current EbayPrice", ebayItem.price);
+        console.log("Current Amazon Price", amazonItem.price);
+        console.log("ebay_optimal_price",ebay_optimal_price);
+        console.log("ebay_optimal_price", `${amazonItem.price} * ${price_percent} = ${ebay_optimal_price}`);
+
+      setItemPrice(ebayItem.itemNumber, ebay_optimal_price).then(() => resolve());
+      
+
+
+    }else {
       resolve();
     }
 
