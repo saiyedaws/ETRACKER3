@@ -1,14 +1,58 @@
-
-// Connecting with the background
+        // Connecting with the background
 let bg_port = chrome.runtime.connect({ name: "ebay_list" }),
-    table_rows_pattern = 'tbody[id*=grid-row]';
-
+table_rows_pattern = 'tbody[id*=grid-row]';
 
 var totalPageNumber = 0;
 var currentPageNumber = 0;  
 
-if(typeof isWorkingPage !== 'undefined' && isWorkingPage)
+
+setInterval(() => {
+    console.log("Time out!");
+    location.reload();
+}, 600000);
+
+
+
+console.log("ebay Start");
+
+
+if (/complete|interactive|loaded/.test(document.readyState)) {
+    // In case the document has finished parsing, document's readyState will
+    // be one of "complete", "interactive" or (non-standard) "loaded".
+    startPage();
+} else {
+    // The document is not ready yet, so wait for the DOMContentLoaded event
+    console.log("Page Not Ready Yet!");
+
+    document.addEventListener('DOMContentLoaded', startPage, false);
+}
+
+
+
+function startPage()
 {
+    console.log("Starting Page");
+/*
+
+        // Connecting with the background
+    let bg_port = chrome.runtime.connect({ name: "ebay_list" }),
+    table_rows_pattern = 'tbody[id*=grid-row]';
+
+
+    var totalPageNumber = 0;
+    var currentPageNumber = 0;  
+
+    */
+    
+
+    console.log("isWorkingPage:",isWorkingPage);
+
+    if(typeof isWorkingPage !== 'undefined' && isWorkingPage)
+    {
+
+        console.log("isWorkingPage:",isWorkingPage);
+
+
     try 
     {
         getCurrentPgNumber();
@@ -21,26 +65,16 @@ if(typeof isWorkingPage !== 'undefined' && isWorkingPage)
         //send to background page their was error and then refresh with is working page
         chrome.runtime.sendMessage({ type: 'from_ebay_list', command: "restart_ebay_page", error:error});
     }
+
+
+
+
+    }
+
+
+
+
     
-
-
-
-}
-
-function sendDataToBackground()
-{
-    // Send
-    var totalActiveListings = parseInt($("span.results-count").html().replace(/[^0-9]/g, ''));
-    bg_port.postMessage({ type: 'total_active_listings', count: totalActiveListings });
-    bg_port.postMessage({ type: 'SKU_codes', sku_list: getSKUsList() });
-
-
-    bg_port.postMessage({ type: 'pgNumber', totalPageNumber: totalPageNumber, currentPageNumber : currentPageNumber  });
-}
-
-
-
-
 bg_port.onMessage.addListener((request) => 
 {
 
@@ -72,6 +106,31 @@ bg_port.onMessage.addListener((request) =>
 
 
 });
+
+
+
+
+}
+
+
+
+
+
+function sendDataToBackground()
+{
+    // Send
+    var totalActiveListings = parseInt($("span.results-count").html().replace(/[^0-9]/g, ''));
+    bg_port.postMessage({ type: 'total_active_listings', count: totalActiveListings });
+    bg_port.postMessage({ type: 'SKU_codes', sku_list: getSKUsList() });
+
+
+    bg_port.postMessage({ type: 'pgNumber', totalPageNumber: totalPageNumber, currentPageNumber : currentPageNumber  });
+}
+
+
+
+
+
 
 
 function getItemQuantityAndSku(itemNumber)
@@ -302,6 +361,9 @@ function getCurrentPgNumber()
     currentPageNumber = pgNumberElement.getElementsByClassName("textbox__control")[0].value
 
     totalPageNumber = pgNumberElement.getElementsByClassName("label")[0].innerText.replace(/\D/g, "");
+
+    console.log("currentPageNumber",currentPageNumber);
+    console.log("totalPageNumber",totalPageNumber);
 
 
 

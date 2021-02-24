@@ -249,7 +249,8 @@ function getPriceElement() {
         document.getElementById("priceblock_saleprice") ||
         document.getElementById("buyNewSection") ||
         document.getElementById("buyNew_noncbb") ||
-        document.getElementById("priceblock_dealprice")
+        document.getElementById("priceblock_dealprice") ||
+        document.getElementById("usedBuyBoxPrice")
         ;
 
 

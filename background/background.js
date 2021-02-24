@@ -99,7 +99,7 @@ function startNextPage() {
           // Defining of needed page inside a script
           chrome.tabs.executeScript(main_tab, {
             code: "let isWorkingPage = true;",
-            runAt: "document_end",
+            runAt: "document_start",
           });
         }
       );
