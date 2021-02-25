@@ -35,7 +35,7 @@ async function getSearchResults()
 {
 	var searchResults = [];
 
-	var items = mainContent.getElementsByClassName("s-item__info");
+	var items = document.getElementsByClassName("s-item__info");
 
 	for (var index = 0; index < items.length; index++) 
 	{

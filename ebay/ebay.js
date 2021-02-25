@@ -45,7 +45,13 @@ function startPage()
     */
     
 
-    console.log("isWorkingPage:",isWorkingPage);
+    try {
+        console.log("isWorkingPage:",isWorkingPage);
+    } catch (error) {
+        console.log(error);
+        console.log("isWorkingPage:","FALSE");
+    }
+    
 
     if(typeof isWorkingPage !== 'undefined' && isWorkingPage)
     {
