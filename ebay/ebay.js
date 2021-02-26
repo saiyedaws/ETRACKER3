@@ -6,10 +6,6 @@ var totalPageNumber = 0;
 var currentPageNumber = 0;  
 
 
-setInterval(() => {
-    console.log("Time out!");
-    location.reload();
-}, 600000);
 
 
 
@@ -32,17 +28,12 @@ if (/complete|interactive|loaded/.test(document.readyState)) {
 function startPage()
 {
     console.log("Starting Page");
-/*
-
-        // Connecting with the background
-    let bg_port = chrome.runtime.connect({ name: "ebay_list" }),
-    table_rows_pattern = 'tbody[id*=grid-row]';
 
 
-    var totalPageNumber = 0;
-    var currentPageNumber = 0;  
-
-    */
+    setInterval(() => {
+        console.log("Time out!");
+        location.reload();
+    }, 600000);
     
 
     try {
@@ -381,4 +372,10 @@ function checkForFailToEditAlert()
     var doesFailToEditAlertExist = document.getElementsByClassName("inline-alert inline-alert--priority").length;
 
     return doesFailToEditAlertExist;
+}
+
+
+function restartPage(){
+    bg_port.postMessage({ type: 'restart_ebay_page'});
+
 }

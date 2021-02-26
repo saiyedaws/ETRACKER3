@@ -626,6 +626,8 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
     );
 
 
+    console.log("\n ------------Continueing checkCompetitors ------------------ \n");
+
     console.log("Optimize Priced: ", optimizedPrice);
     console.log("amazonItem.price: ", amazonItem.price);
     console.log("amazonItem.isItemAvailable: ", amazonItem.isItemAvailable);
@@ -633,31 +635,57 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
     console.log("ebayItem.price: ", ebayItem.price);
     console.log("ebayItem.price-1.03: ", ebayItem.price-1.03);
 
+    console.log("\n\n");
+
 
 
     if (optimizedPrice > 0 && amazonItem.price > 0  && amazonItem.isItemAvailable && amazonItem.isEligibleForPrime) 
     {
       if(optimizedPrice == ebayItem.price)
       {
+        console.log(`optimizedPrice(${optimizedPrice}) == ebayItem.price(${ebayItem.price})`);
         console.log("ebay Item price already optimized, exiting");
         resolve();
       }else if (ebayItem.price > optimizedPrice || (ebayItem.price-1.03 < amazonItem.price) ) 
       {
+        console.log(`ebayItem.price(${ebayItem.price}) > optimizedPrice(${optimizedPrice})`);
+        console.log(`or`);
+        console.log(`ebayItem.price-1.03(${ebayItem.price-1.03}) < amazonItem.price(${amazonItem.price})`);
 
-        console.log(`
+        console.log(`\n
         Optimizing Price of Item.
         EbayItem-Price: ${ebayItem.price}
         amazonItem-Price: ${amazonItem.price}
         optimized-Price: ${optimizedPrice}
+        optimizedPrice+1.03: ${optimizedPrice + 1.03}
+        optimizedPrice-1.03: ${optimizedPrice - 1.03}
         `);
+
+
+
+        var optimizedPriceTopCap = parseFloat(optimizedPrice) + parseFloat(1.03);
+        console.log("optimizedPriceTopCap",optimizedPriceTopCap);
+        var optimizedPriceBottomCap = parseFloat(optimizedPrice) - parseFloat(1.03);
+        console.log("optimizedPriceBottomCap",optimizedPriceBottomCap);
+
+
+
 
 
         if 
         (
-          (ebayItem.price) > (optimizedPrice+1) || 
-          (ebayItem.price) < (optimizedPrice-1)
+          (ebayItem.price) > optimizedPriceTopCap || 
+          (ebayItem.price) < optimizedPriceBottomCap
 
          ){
+
+          console.log(` 
+          (ebayItem.price) > (optimizedPrice+1.03) || 
+          (ebayItem.price) < (optimizedPrice-1.03)
+          
+          `);
+
+
           setItemPrice(ebayItem.itemNumber, optimizedPrice).then(() => resolve());
          }else{
            resolve();
@@ -674,9 +702,10 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
 
         var price_percent = JSON.parse(localStorage.getItem('price_percent'));
         price_percent = (price_percent + 100)/100;
+
         var ebay_optimal_price = amazonItem.price*price_percent;
-        ebay_optimal_price = ebay_optimal_price.toFixed(2);
-        ebay_optimal_price = parseInt(ebay_optimal_price);
+       // ebay_optimal_price = ebay_optimal_price.toFixed(2);
+        ebay_optimal_price = parseFloat(ebay_optimal_price).toFixed(2);
         
 
         console.log();
@@ -702,6 +731,8 @@ async function checkCompetitors(ebayItem, amazonItem, ebaySearchResults){
 function optimizePrice(myPrice, amazonPrice, ebaySearchResults) 
 {
   var optimizedPrice = -999;
+
+
   
   console.log("\n Starting Optimize Price Function");
 
@@ -721,32 +752,102 @@ function optimizePrice(myPrice, amazonPrice, ebaySearchResults)
     var competitorPrice = ebaySearchResults[index];
     competitorPrice = parseFloat(competitorPrice).toFixed(2);
     
+    console.log("\n\n-------------------New Loop--------------------\n\n");
     console.log("inside loop, competitor Price",competitorPrice);
     console.log("inside loop, amazonPrice Price",amazonPrice);
     console.log("inside loop, myPrice Price",myPrice);
 
-    if (amazonPrice <= competitorPrice) 
+    if((competitorPrice >= amazonPrice))
+    {
+      console.log(`competitorPrice(${competitorPrice})  >= amazonPrice(${amazonPrice})\n`);
+      
+    }else{
+      console.log(`competitorPrice(${competitorPrice})  < amazonPrice(${amazonPrice})\n`);
+    }
+
+    if((competitorPrice >= amazonPrice) && (competitorPrice >= myPrice) && (myPrice >= amazonPrice))
+    {
+      //if competitor price is higher then my price, then my price should stay the same if its above amazon price
+
+      console.log("\n");
+      console.log(`competitorPrice(${competitorPrice})  >= amazonPrice(${amazonPrice})`);
+      console.log(`competitorPrice(${competitorPrice})  >= myPrice(${myPrice})`);
+      console.log(`myPrice(${myPrice})  >= amazonPrice(${amazonPrice})`);
+
+      //console.log(`optimizedPrice = myPrice;`);
+      //optimizedPrice = myPrice;
+
+      console.log(`competitorPrice - 1.03;`);
+      optimizedPrice = competitorPrice - 1.03;
+
+
+      console.log("optimizedPrice",optimizedPrice);
+      console.log('break');
+      break;
+    }
+
+
+    if((competitorPrice >= amazonPrice) &&  (myPrice > competitorPrice))
+    {
+
+      console.log(`competitorPrice(${competitorPrice})  >= amazonPrice(${amazonPrice})`);
+      console.log(`myPrice(${myPrice}) >= competitorPrice(${competitorPrice})`);
+
+      console.log(`competitorPrice - 1.03;`);
+      optimizedPrice = competitorPrice - 1.03;
+      console.log("optimizedPrice",optimizedPrice);
+      console.log('break');
+      break;
+
+    }
+
+    if((competitorPrice >= amazonPrice) &&  (myPrice < amazonPrice))
+    {
+
+      console.log(`competitorPrice(${competitorPrice})  >= amazonPrice(${amazonPrice})`);
+      console.log(`myPrice(${myPrice}) <= amazonPrice(${amazonPrice})`);
+
+      console.log(`competitorPrice - 1.03;`);
+      optimizedPrice = competitorPrice - 1.03;
+      console.log("optimizedPrice",optimizedPrice);
+      console.log('break');
+      break;
+
+    }
+
+/*
+
+    if (competitorPrice >= amazonPrice) 
     {
       //console.log(`competitorPrice:  (${competitorPrice})`);
 
-      console.log("Amazon Price is greater or equal then competitorPrice");
-      console.log("\n\n");
+      //console.log("Amazon Price is less then or equal then competitorPrice");
+      //console.log(`Amazon Price(${amazonPrice})  <= competitorPrice(${competitorPrice})`);
 
-      if (myPrice > competitorPrice || myPrice < amazonPrice) 
+      console.log(`competitorPrice(${competitorPrice})  >= amazonPrice(${amazonPrice})`);
+      console.log("\n");
+
+
+  
+
+      if (myPrice > competitorPrice || myPrice <= amazonPrice) 
       {
-        console.log(`myPrice(${myPrice}) > competitorPrice(${competitorPrice})`);
+        console.log(`myPrice(${myPrice}) >= competitorPrice(${competitorPrice}) || myPrice <= amazonPrice`);
 				optimizedPrice = competitorPrice - 1.03;
 				break;
       }
       
     }
+    */
     
 
     //var promiseResult = await printMessage();
    // console.log("promiseResult",promiseResult);
 	}
 
-	var optimizedPrice = optimizedPrice.toFixed(2);
+	//optimizedPrice = optimizedPrice.toFixed(2);
+  optimizedPrice = parseFloat(optimizedPrice).toFixed(2);
+  console.log("optimizePrice function end:",optimizedPrice);
 	return optimizedPrice;
 }
 
