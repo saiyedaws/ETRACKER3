@@ -196,14 +196,22 @@ console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
   {
     console.log("Starting ifPageNotOpenedCorrectly");
 
+    /*
     if(ebayItem.quantity > 0)
     {
       await setItemQuantity(ebayItem.itemNumber, 0);
     }
+
+    */
     
 
-    console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
-    return true;
+   console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
+   await new Promise(resolve => setTimeout(resolve, 1000));
+  return true;
+   
+
+   // console.log(`SKU NOT WORKING, Page not found for: ${ebayItem.itemNumber} `);
+   // return true;
   }
 
   if(amazonItem.isPageCorrectlyOpened && isMaxItemPriceEnabled && amazonItem.price > maxItemPrice)
