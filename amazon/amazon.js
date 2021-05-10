@@ -219,6 +219,10 @@ function checkIfPriceExists() {
                 var priceElement = getPriceElement();
 
                 priceString = priceElement.innerText.replace("CDN$ ", "");
+               // priceString = priceString.match(/^([a-z0-9]{5,})$/);
+
+               var filteredPrices = priceString.match(/\d{1,5}\.\d{0,2}/);
+                console.log("filteredPriceString,",filteredPrices[0]);
 
 
                 resolve();
@@ -250,10 +254,12 @@ function getPriceElement() {
         document.getElementById("buyNewSection") ||
         document.getElementById("buyNew_noncbb") ||
         document.getElementById("priceblock_dealprice") ||
-        document.getElementById("usedBuyBoxPrice")
+        document.getElementById("usedBuyBoxPrice") ||
+        document.getElementById("newBuyBoxPrice") ||
+        document.getElementById("priceblock_ourprice") 
         ;
 
-
+     
     //Elements with weird options
     if(document.querySelectorAll("#buybox-see-all-buying-choices-announce").length > 0)
     {
@@ -265,22 +271,64 @@ function getPriceElement() {
 
 
 
+    if(document.querySelectorAll("#price").length > 0 && !priceElement)
+    {
+        var priceElement = document.getElementById("price");
+        console.log("priceElement.innerText:",priceElement.innerText);
+
+        if(priceElement.innerText.search("	See price in cart"))
+        {
+            console.log("	found error {See price in cart}, creating temporary fix");
+
+
+            priceElement = document.createElement("div");
+            priceElement.innerText = "-99999.00"
+        }
+        
+    }  
+    
+
+
+    console.log("priceElement",priceElement);
     return priceElement;
 
 }
 
 
+function getHiddenAmazonPrice(){
+
+}
 
 function getAmazonPrice() {
-    var priceString = "-1";
+    var filteredPrice = "-1";
 
 
-    if (IsItemAvailable()) {
+    if (IsItemAvailable()) 
+    {
         var priceElement = getPriceElement();
+        priceString = priceElement.innerText;
 
-        ;
+        try 
+        {
+            if(Number(priceString) < 0)
+            {
+                return Number(priceString);
+            }
+    
+        } catch (error) {
+            console.log(error);
+        }
+      
 
-        priceString = priceElement.innerText.replace("CDN$ ", "");
+
+        priceString = priceString.replace("CDN$ ", "");
+        var filteredPrices = priceString.match(/\d{1,5}\.\d{0,2}/);
+
+        filteredPrice = filteredPrices[0];
+        
+        console.log("filteredPrice,",filteredPrice);
+
+        return Number(filteredPrice);
 
     }
 
@@ -288,7 +336,7 @@ function getAmazonPrice() {
 
 
 
-    return Number(priceString);
+    return Number(filteredPrice);
 
 }
 
