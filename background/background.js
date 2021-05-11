@@ -370,7 +370,7 @@ function checkNextPage()
 }
 
 async function fetchAmazonProductDetails(item) {
-  //console.log(item);
+  console.log("fetchAmazonProductDetails item:",item);
 
   await launchAmazonItemPage(item.SKU);
 
