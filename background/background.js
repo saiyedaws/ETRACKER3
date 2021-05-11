@@ -156,6 +156,7 @@ async function checkSKUList(list) {
       continue;
     }
 
+    /*
     try {
       await checkItem(item);
     } catch (error) 
@@ -173,6 +174,9 @@ async function checkSKUList(list) {
       localStorage.setItem('local_error_list', error_list);
       
     }
+    */
+
+    await checkItemAndRecordError(item);
    
 
     //await checkToEndItemListing(item.itemNumber);
@@ -181,6 +185,29 @@ async function checkSKUList(list) {
   }
 
   await checkNextPage();
+}
+
+
+async function checkItemAndRecordError(item){
+  try {
+    await checkItem(item);
+  } catch (error) 
+  {
+    console.log("error @ checkItem: ",error);
+
+    var errorObject = {
+      error_message : error,
+      item: item,
+    }
+
+    console.log("errorObject",errorObject);
+
+    error_list.push(errorObject);
+    console.log("error_list",error_list);
+
+    localStorage.setItem('local_error_list', JSON.stringify(error_list));
+    
+  }
 }
 
 

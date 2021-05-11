@@ -105,8 +105,18 @@ function addEventListener(){
 
 function display_errors(){
 
-    var local_error_list = JSON.parse( localStorage.getItem('local_error_list'));
-    console.log("local_error_list",local_error_list);
+    try {
+        var local_error_list = JSON.parse( localStorage.getItem('local_error_list'));
+        console.log("local_error_list",local_error_list);
+    
+    } catch (error) {
+        console.log("error",error);
+    }
+
+
+  
+
+
     
 }
 

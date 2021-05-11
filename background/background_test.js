@@ -98,7 +98,9 @@ async function testCheckSku(itemNumber)
   }
   */
 
-  await checkItem(ebayItem);
+  //await checkItem(ebayItem);
+
+  await checkItemAndRecordError(ebayItem);
 
 
 }
