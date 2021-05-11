@@ -13,7 +13,7 @@ let popup_port,
   endListing_tab,
   didItemFailToUpdate = false,
   amazon_tab_id,
-  error_list
+  error_list = []
   ;
 
 function test_option_settings() {
@@ -166,6 +166,8 @@ async function checkSKUList(list) {
         error_message : error,
         item: item,
       }
+
+      console.log("errorObject",errorObject);
 
       error_list.push(errorObject);
       localStorage.setItem('local_error_list', error_list);
