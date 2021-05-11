@@ -12,7 +12,9 @@ let popup_port,
   currentPageNumber = 0,
   endListing_tab,
   didItemFailToUpdate = false,
-  amazon_tab_id;
+  amazon_tab_id,
+  error_list
+  ;
 
 function test_option_settings() {
   var out_of_stock_check_box_value = JSON.parse(
@@ -154,7 +156,22 @@ async function checkSKUList(list) {
       continue;
     }
 
-    await checkItem(item);
+    try {
+      await checkItem(item);
+    } catch (error) 
+    {
+      console.log("error @ checkItem: ",error);
+
+      var errorObject = {
+        error_message : error,
+        item: item,
+      }
+
+      error_list.push(errorObject);
+      localStorage.setItem('local_error_list', error_list);
+      
+    }
+   
 
     //await checkToEndItemListing(item.itemNumber);
 

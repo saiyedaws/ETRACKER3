@@ -97,8 +97,18 @@ function addEventListener(){
 
     document.querySelector('#chrome_settings').addEventListener('click', open_chrome_settings);
 
+    document.querySelector('#get_errors_button').addEventListener('click', display_errors);
+
 
 }addEventListener();
+
+
+function display_errors(){
+
+    var local_error_list = JSON.parse( localStorage.getItem('local_error_list'));
+    console.log("local_error_list",local_error_list);
+    
+}
 
 function save_max_item_price(){
     var max_item_price_input = document.querySelector("#max_item_price_input").value;
