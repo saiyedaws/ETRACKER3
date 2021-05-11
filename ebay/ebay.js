@@ -31,8 +31,8 @@ function startPage()
 
 
     setInterval(() => {
-        console.log("Time out!");
-        location.reload();
+    //    console.log("Time out!");
+       // location.reload();
     }, 600000);
     
 
