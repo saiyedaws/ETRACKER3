@@ -164,7 +164,7 @@ async function scrapeAmazon() {
     console.log("Scrape Amazon begins");
 
     //await waits for completion before next function starts
-    await checkIfPriceExists();
+    //await checkIfPriceExists();
 
     console.log("checkIfPriceExists done");
 
