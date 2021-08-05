@@ -305,8 +305,16 @@ function getAmazonPrice() {
 
     if (IsItemAvailable()) 
     {
-        var priceElement = getPriceElement();
-        priceString = priceElement.innerText;
+        try {
+            var priceElement = getPriceElement();
+            priceString = priceElement.innerText;
+    
+        } catch (error) {
+
+            console.log("error getting priceString price");
+            return Number(filteredPrice);
+        }
+
 
         try 
         {
@@ -440,6 +448,14 @@ function IsEligibleForPrime()
      {
         isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('#sfsb_accordion_head');
      }
+
+
+     if(isItemFullfilledByAmazon === false)
+     {
+        isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('.tabular-buybox-text');
+     }
+
+     
 
      resolve(isItemFullfilledByAmazon);
 
