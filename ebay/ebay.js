@@ -313,8 +313,17 @@ async function setRowCellValue(itemNumber, key, value)
               setTimeout(
                 function() 
                 {
-                    $form = $('form[id*="inline-editors"]');
-                    $form.find('button[type="submit"]').click();
+
+                    //$form = $('form[id*="inline-edit-"]');
+                    //console.log("form",form);
+                    //$form.find('button[type="submit"]').click();
+
+                    var form = document.querySelector('form[class*="inline-edit-"]');
+                    //console.log("form",form);
+
+                    var formButton = form.querySelector('button[type="submit"]');
+                    formButton.click();
+
 
 
                     setTimeout(() => resolve(), 8000); // Third Wait - After Submitting clicking
