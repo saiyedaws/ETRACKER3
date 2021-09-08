@@ -430,7 +430,36 @@ function IsEligibleForPrime()
             return isItemFullfilledByAmazon;
      }
 
+     function checkForFreeShippingInDataElement()
+     {
+        var isItemFullfilledByAmazon = false;
+
+            try {
+               var isItemFullfilledByAmazonElement = document.querySelector("span[data-csa-c-delivery-benefit-program-id]").getAttribute("data-csa-c-delivery-benefit-program-id");
+               isItemFullfilledByAmazon = isItemFullfilledByAmazonElement.toLowerCase().includes("cfs") || isItemFullfilledByAmazonElement.toLowerCase().includes("ncp");
+
+              if(isItemFullfilledByAmazon){
+                  console.log("(isItemFullfilledByAmazon)", `true with delivery-benefit-program-id: ${isItemFullfilledByAmazonElement}`);
+              }else{
+                console.log("(isItemFullfilledByAmazon)", `false with delivery-benefit-program-id: ${isItemFullfilledByAmazonElement}`);
+              }
+            } catch (error) {
+                
+            }
+        
+            return isItemFullfilledByAmazon;
+     }
+
+
+   
+
      var isItemFullfilledByAmazon = false;
+
+     if(isItemFullfilledByAmazon === false)
+     {
+        isItemFullfilledByAmazon = checkForFreeShippingInDataElement();
+     }
+
 
      if(isItemFullfilledByAmazon === false)
      {
@@ -454,6 +483,14 @@ function IsEligibleForPrime()
      {
         isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('.tabular-buybox-text');
      }
+
+     if(isItemFullfilledByAmazon === false)
+     {
+      //  isItemFullfilledByAmazon = checkSelectorForFullfilledByAmazon('#bbop');
+     }
+
+
+   
 
      
 

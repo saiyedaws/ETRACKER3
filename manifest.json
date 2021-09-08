@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Ebay Tracker V3",
-    "version": "5.28",
+    "version": "5.32",
     "permissions": [
       "<all_urls>",
       "tabs"
@@ -23,8 +23,9 @@
         "run_at": "document_start"
       },
       {
-        "matches": ["*://amazon.ca/dp/*", "*://*.amazon.ca/dp/*", "*://amazon.com/dp/*", "*://*.amazon.com/dp/*",
-          "https://www.amazon.ca/gp/product/*", "https://www.amazon.ca/errors/*"
+        "matches": [
+          "*://amazon.ca/dp/*", "*://*.amazon.ca/dp/*", "*://amazon.com/dp/*", "*://*.amazon.com/dp/*",
+          "https://www.amazon.ca/gp/product/*", "https://www.amazon.ca/errors/*","*://amazon.ca/*/dp/*", "*://*.amazon.ca/*/dp/*"
         ],
         "js": ["libraries/jquery.min.js","libraries/custom.js", "amazon/amazon.js"],
         "run_at": "document_start"
