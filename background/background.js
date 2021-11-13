@@ -441,11 +441,15 @@ async function fetchAmazonProductDetails(item) {
       if (
         request.type === "from_amazon" &&
         request.command === "fetched_data" &&
-        amazonItemUrl.toLowerCase().replace(/(\s\s\s*)/g, " ") ===
+        amazonItemUrl.toLowerCase().replace(/(\s\s\s*)/g, " ")
+        .replace("?th=1","")
+        .replace("&psc=1","")
+        ===
           request.amazonItemData.amazonItemUrl
             .toLowerCase()
             .replace(/(\s\s\s*)/g, " ")
             .replace("?th=1","")
+            .replace("&psc=1","")
       ) {
         chrome.runtime.onMessage.removeListener(messageListener);
 
