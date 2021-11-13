@@ -288,6 +288,15 @@ function getPriceElement() {
     }  
     
 
+    if(document.querySelectorAll("#corePrice_desktop").length > 0 && !priceElement)
+    {
+        var priceElement = document.getElementById("corePrice_desktop");
+        priceElement = priceElement.getElementsByClassName("apexPriceToPay")[0];
+        console.log("priceElement.innerText:",priceElement.innerText);
+
+        
+        
+    }  
 
     console.log("priceElement",priceElement);
     return priceElement;

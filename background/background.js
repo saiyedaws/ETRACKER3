@@ -445,6 +445,7 @@ async function fetchAmazonProductDetails(item) {
           request.amazonItemData.amazonItemUrl
             .toLowerCase()
             .replace(/(\s\s\s*)/g, " ")
+            .replace("?th=1","")
       ) {
         chrome.runtime.onMessage.removeListener(messageListener);
 
