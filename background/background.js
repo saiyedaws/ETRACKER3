@@ -222,6 +222,11 @@ console.log('amazonItem',amazonItem);
 
 console.log('\n\n')
 
+if(amazonItem.isItemCorrectUrl === false){
+  console.log("on checkItem Function , amazon item is not on correct url");
+ 
+}
+
 var isCheckOutOfStockEnabled = JSON.parse(localStorage.getItem('out_of_stock_check_box_value'));
 console.log("isCheckOutOfStockEnabled", isCheckOutOfStockEnabled);
 
@@ -238,7 +243,7 @@ var isCompetitorWatchEnabled = JSON.parse(localStorage.getItem('competitor_watch
 console.log("isCompetitorWatchEnabled",isCompetitorWatchEnabled);
 
 
- if(!amazonItem.isPageCorrectlyOpened)
+ if(!amazonItem.isPageCorrectlyOpened || amazonItem.isItemCorrectUrl === false)
   {
     console.log("Starting ifPageNotOpenedCorrectly");
 
@@ -436,12 +441,24 @@ async function fetchAmazonProductDetails(item) {
       console.log("request.amazonItemUrl:",request.amazonItemData.amazonItemUrl
       .toLowerCase()
       .replace(/(\s\s\s*)/g, " "));
-      
+
+      console.log("amazonItemUrl fixed:",   amazonItemUrl.toLowerCase()
+      .replace(/(\s\s\s*)/g, " ")
+      .replace("?th=1","")
+      .replace("&psc=1",""));
+
+      console.log("request.amazonItemUrl fixed:",
+      request.amazonItemData.amazonItemUrl
+      .toLowerCase()
+      .replace(/(\s\s\s*)/g, " ")
+      .replace("?th=1","")
+      .replace("&psc=1",""));
       
       if (
         request.type === "from_amazon" &&
         request.command === "fetched_data" &&
-        amazonItemUrl.toLowerCase().replace(/(\s\s\s*)/g, " ")
+        amazonItemUrl.toLowerCase()
+        .replace(/(\s\s\s*)/g, " ")
         .replace("?th=1","")
         .replace("&psc=1","")
         ===
@@ -451,17 +468,36 @@ async function fetchAmazonProductDetails(item) {
             .replace("?th=1","")
             .replace("&psc=1","")
       ) {
+
+        console.log("url is equal");
         chrome.runtime.onMessage.removeListener(messageListener);
 
         amazonItemData = request.amazonItemData;
+        amazonItemData.isItemCorrectUrl = true;
 
-        //console.log(amazonItemData);
+        console.log("amazonItemData",amazonItemData);
+
 
         chrome.tabs.remove(amazon_tab_id, () => {
             resolve(amazonItemData);
         });
 
         
+      }else{
+        console.log("url is not equal");
+        chrome.runtime.onMessage.removeListener(messageListener);
+      
+        amazonItemData = request.amazonItemData;
+        amazonItemData.isItemCorrectUrl = false;
+
+        console.log("amazonItemData",amazonItemData);
+
+        chrome.tabs.remove(amazon_tab_id, () => {
+          resolve(amazonItemData);
+      });
+
+
+
       }
     };
 

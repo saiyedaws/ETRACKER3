@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Ebay Tracker V3",
-    "version": "5.35",
+    "version": "5.37",
     "permissions": [
       "<all_urls>",
       "tabs"
